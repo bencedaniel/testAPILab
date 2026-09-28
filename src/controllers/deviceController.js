@@ -85,3 +85,71 @@ export const importDeviceInventory = async (req, res) => {
         });
     }
 };
+// BIZTONSÁGOS: Új eszköz létrehozása (Create)
+export const createDeviceSecure = async (req, res) => {
+    try {
+        // Védelem Mass Assignment ellen: csak az engedélyezett mezőket olvassuk ki
+        const { name, type, serialNumber } = req.body;
+        
+        if (!name || !type) {
+            return res.status(400).json({ error: 'Név és típus megadása kötelező.' });
+        }
+
+        const newDevice = new Device({ name, type, serialNumber });
+        await newDevice.save();
+        res.status(201).json(newDevice);
+    } catch (error) {
+        // Biztonságos hibakezelés (API8 védelem): nincs stack trace szivárgás
+        res.status(500).json({ error: 'Hiba az eszköz létrehozásakor.' });
+    }
+};
+
+// BIZTONSÁGOS: Egyetlen eszköz lekérése (Read)
+export const getDeviceByIdSecure = async (req, res) => {
+    try {
+        const device = await Device.findById(req.params.id);
+        if (!device) return res.status(404).json({ error: 'Eszköz nem található.' });
+        
+        res.status(200).json(device);
+    } catch (error) {
+        res.status(500).json({ error: 'Érvénytelen azonosító formátum.' });
+    }
+};
+
+// BIZTONSÁGOS: Eszköz módosítása (Update)
+export const updateDeviceSecure = async (req, res) => {
+    try {
+        // RBAC ellenőrzés (API5 BFLA védelem): Csak adminisztrátorok frissíthetnek
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Nincs jogosultságod a művelethez.' });
+        }
+
+        const updatedDevice = await Device.findByIdAndUpdate(
+            req.params.id, 
+            { $set: { name: req.body.name, type: req.body.type, status: req.body.status } }, 
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedDevice) return res.status(404).json({ error: 'Eszköz nem található.' });
+        res.status(200).json(updatedDevice);
+    } catch (error) {
+        res.status(500).json({ error: 'Szerverhiba a frissítés során.' });
+    }
+};
+
+// BIZTONSÁGOS: Eszköz törlése (Delete) - A sebezhető API5 végpontunk "jó" verziója
+export const deleteDeviceSecure = async (req, res) => {
+    try {
+        // RBAC ellenőrzés (API5 BFLA védelem)
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Kizárólag adminisztrátorok törölhetnek eszközt.' });
+        }
+
+        const deletedDevice = await Device.findByIdAndDelete(req.params.id);
+        if (!deletedDevice) return res.status(404).json({ error: 'Eszköz nem található.' });
+        
+        res.status(200).json({ message: 'Eszköz sikeresen törölve.', id: deletedDevice._id });
+    } catch (error) {
+        res.status(500).json({ error: 'Szerverhiba.' });
+    }
+};
