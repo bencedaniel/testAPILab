@@ -116,8 +116,8 @@ router.post('/:id/reserve', reserveDeviceVulnerable);
  * @swagger
  * /api/devices/secure:
  *   post:
- *     summary: Új eszköz regisztrálása (Biztonságos)
- *     description: Létrehoz egy új eszközt a nyilvántartásban. A végpont védett a Mass Assignment támadások ellen.
+ *     summary: Új eszköz regisztrálása
+ *     description: Létrehoz egy új eszközt a nyilvántartásban.
  *     tags: [Devices (Secure CRUD)]
  *     security:
  *       - bearerAuth: []
@@ -149,7 +149,7 @@ router.post('/secure', createDeviceSecure);
  * @swagger
  * /api/devices/secure/{id}:
  *   get:
- *     summary: Egyetlen eszköz lekérése (Biztonságos)
+ *     summary: Egyetlen eszköz lekérése
  *     description: Visszaadja a megadott azonosítójú eszköz részleteit.
  *     tags: [Devices (Secure CRUD)]
  *     security:
@@ -173,7 +173,7 @@ router.get('/secure/:id', getDeviceByIdSecure);
  * /api/devices/secure/{id}:
  *   put:
  *     summary: Eszköz adatainak módosítása (Adminisztrátori funkció)
- *     description: Módosítja egy létező eszköz adatait. Szigorú szerepkör-ellenőrzést alkalmaz.
+ *     description: Módosítja egy létező eszköz adatait. 
  *     tags: [Devices (Secure CRUD)]
  *     security:
  *       - bearerAuth: []
@@ -211,7 +211,7 @@ router.put('/secure/:id', updateDeviceSecure);
  * @swagger
  * /api/devices/secure/{id}:
  *   delete:
- *     summary: Eszköz törlése (Adminisztrátori funkció)
+ *     summary: Eszköz törlése
  *     description: Töröl egy eszközt a rendszerből. Helyesen implementált BFLA védelemmel.
  *     tags: [Devices (Secure CRUD)]
  *     security:

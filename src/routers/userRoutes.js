@@ -8,7 +8,16 @@ import {
 } from '../controllers/userController.js'; 
 import { authenticateToken } from '../middleware/auth.js'; 
 const router = express.Router();
-
+// Bővített import a biztonságos funkciókkal
+import { 
+    getAllDevices, 
+    deleteDeviceVulnerable, 
+    reserveDeviceVulnerable,
+    createDeviceSecure,
+    getDeviceByIdSecure,
+    updateDeviceSecure,
+    deleteDeviceSecure
+} from '../controllers/deviceController.js';
 router.use(authenticateToken); 
 
 /**
@@ -71,21 +80,9 @@ router.get('/me/secure', getMyProfileSecure);
  */
 router.get('/:id', getUserProfileVulnerable);
 
-import express from 'express';
-// Bővített import a biztonságos funkciókkal
-import { 
-    getAllDevices, 
-    deleteDeviceVulnerable, 
-    reserveDeviceVulnerable,
-    createDeviceSecure,
-    getDeviceByIdSecure,
-    updateDeviceSecure,
-    deleteDeviceSecure
-} from '../controllers/deviceController.js';
-import { authenticateToken } from '../middleware/auth.js';
 
 
-router.use(authenticateToken);
+
 
 // ... (Itt vannak a korábbi végpontok: GET /, DELETE /admin/:id, POST /:id/reserve) ...
 

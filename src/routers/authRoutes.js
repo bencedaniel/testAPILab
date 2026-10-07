@@ -7,7 +7,7 @@ const router = express.Router();
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Új felhasználó regisztrálása (Mass Assignment sebezhetőség)
+ *     summary: Új felhasználó regisztrálása 
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -34,7 +34,7 @@ router.post('/register', register);
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Bejelentkezés (Brute-force sebezhetőség, Rate Limit hiánya)
+ *     summary: Bejelentkezés 
  *     tags: [Auth]
  *     requestBody:
  *       required: true

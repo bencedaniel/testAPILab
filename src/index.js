@@ -14,13 +14,13 @@ import deviceRoutes from './routers/deviceRoutes.js';
 import webhookRoutes from './routers/webhookRoutes.js';
 import systemRoutes from './routers/systemRoutes.js';
 import legacyRoutes from './routers/legacyRoutes.js';
-
+import morgan from 'morgan';
 
 
 
 const app = express();
 app.use(express.json());
-
+app.use(morgan('dev')); // HTTP kérések logolása a konzolra
 // Swagger-jsdoc konfiguráció
 const swaggerOptions = {
   definition: {
