@@ -11,24 +11,31 @@ export const mockExternalWarrantyApi = (req, res) => {
     });
 };
 
-// API10:2023 - Unsafe Consumption of APIs
 export const checkWarrantyVulnerable = async (req, res) => {
     try {
         const deviceId = req.params.id;
-
-        // VULNERABLE: A rendszer meghívja a külső szolgáltatást...
         const baseUrl = `http://localhost:${process.env.PORT || 3000}`;
-        const response = await fetch(`${baseUrl}/api/internal-mock/warranty/${deviceId}`);
+
+        // Ha a router '/api/warranty' alatt van felcsatolva:
+        const response = await fetch(
+            `${baseUrl}/api/warranty/internal-mock/warranty/${encodeURIComponent(deviceId)}`
+        );
+
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: 'Hiba a külső szolgáltatás elérésekor',
+                status: response.status
+            });
+        }
+
         const data = await response.json();
 
-        // ...és mindenféle szanálás (tisztítás) vagy validáció nélkül 
-        // egy az egyben feldolgozza és visszaadja a kliensnek.
-        res.status(200).json({
+        return res.status(200).json({
             message: 'Garancia információ sikeresen lekérdezve a partner rendszertől.',
             deviceId: deviceId,
-            vendorResponse: data 
+            vendorResponse: data
         });
     } catch (error) {
-        res.status(500).json({ error: 'Hiba a külső szolgáltatás elérésekor' });
+        return res.status(500).json({ error: 'Hiba a külső szolgáltatás elérésekor' });
     }
 };

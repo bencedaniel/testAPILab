@@ -49,7 +49,24 @@ async function runSeed() {
         { username: 'victim_user', email: 'victim@lab.local', password: 'Password123!' }
     ];
 
-    
+    for (const [index, user] of users.entries()) {
+        const registrationData = index === 0
+            ? { ...user, role: 'admin' }
+            : user;
+        const registerRes = await apiCall(
+            'POST',
+            '/api/auth/register',
+            registrationData
+        );
+
+        if (registerRes.status === 201) {
+            console.log(`  ✅ ${user.username} regisztrálva.`);
+        } else if (registerRes.status === 400 && registerRes.data.error) {
+            console.log(`  ℹ️ ${user.username} már létezik vagy regisztrációs hiba történt: ${registerRes.data.error}`);
+        } else {
+            console.error(`  ❌ ${user.username} regisztrációja sikertelen (HTTP ${registerRes.status}):`, registerRes.data);
+        }
+    }
 
     // --- 2. BEJELENTKEZÉS ÉS TOKEN MEGSZERZÉSE ---
     console.log('\n🔑 Bejelentkezés az admin fiókkal...');
